@@ -1,0 +1,25 @@
+{
+  "name": "@tscircuit/kicad-mod-server",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "pull-kicad-footprints": "git clone --depth 1 https://gitlab.com/kicad/libraries/kicad-footprints.git",
+    "move-to-public-dir": "rm -rf public && mkdir -p ./public/kicad-footprints && cp -r ./kicad-footprints/*.pretty ./public/kicad-footprints/",
+    "write-index-file": "make-vfs ./public/kicad-footprints --content-format string --outfile ./vfs.js && node write-index-file.js",
+    "start": "next dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "make-vfs": "^1.0.10"
+  },
+  "devDependencies": {
+    "@types/node": "20.12.12",
+    "@types/react": "18.3.3",
+    "next": "^14.2.3",
+    "typescript": "5.4.5"
+  }
+}

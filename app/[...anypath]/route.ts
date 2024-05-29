@@ -1,0 +1,28 @@
+export const GET = async (req) => {
+  const { pathname } = new URL(req.url)
+
+  // Check if the parameter is provided
+  if (!pathname) {
+    return new Response("Missing path parameter", { status: 400 })
+  }
+
+  // Construct the GitLab URL using the extracted parameter
+  const gitlabUrl = `https://gitlab.com/kicad/libraries/kicad-footprints/-/raw/master${pathname}?ref_type=heads`
+
+  // Fetch the content from GitLab
+  const res = await fetch(gitlabUrl)
+
+  // Check if the fetch was successful
+  if (!res.ok) {
+    return new Response("Couldn't find file", { status: res.status })
+  }
+
+  const headers = new Headers(res.headers)
+  headers.set("Cache-Control", "s-maxage=86400, stale-while-revalidate=86400")
+
+  // Return the fetched response with caching headers
+  return new Response(await res.text(), {
+    status: res.status,
+    headers: headers,
+  })
+}
