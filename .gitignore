@@ -4,3 +4,4 @@ public/kicad_files.json
 vfs.json
 node_modules
 .next
+.vercel
