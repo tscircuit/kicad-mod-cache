@@ -25,10 +25,8 @@ export const GET = async (req) => {
   headers.set("Cache-Control", "s-maxage=86400, stale-while-revalidate=86400")
 
   // Add CORS headers
-  headers.set(
-    "Access-Control-Allow-Origin",
-    "https://github.io, https://tscircuit.com, http://localhost:3000, http://localhost:5173"
-  )
+  headers.set("Access-Control-Allow-Origin", req.headers.get("Origin"))
+  headers.set("Access-Control-Allow-Private-Network", "true")
   headers.set("Access-Control-Allow-Methods", "GET")
   headers.set("Access-Control-Allow-Headers", "Content-Type")
 
@@ -42,11 +40,9 @@ export const GET = async (req) => {
 export const OPTIONS = async (req) => {
   // Add CORS headers
   const headers = new Headers()
-  headers.set(
-    "Access-Control-Allow-Origin",
-    "https://github.io, https://tscircuit.com, http://localhost:3000, http://localhost:5173"
-  )
+  headers.set("Access-Control-Allow-Origin", req.headers.get("Origin"))
   headers.set("Access-Control-Allow-Methods", "GET")
+  headers.set("Access-Control-Allow-Private-Network", "true")
   headers.set("Access-Control-Allow-Headers", "Content-Type")
 
   return new Response(null, {
