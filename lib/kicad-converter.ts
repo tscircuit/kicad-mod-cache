@@ -3,14 +3,14 @@ import { parseKicadModToCircuitJson } from "kicad-component-converter";
 /**
  * Converts KiCad mod file content to circuit.json format
  */
-export function convertKicadModToCircuitJson(kicadModContent: string) {
+export async function convertKicadModToCircuitJson(kicadModContent: string) {
 	try {
 		// Pre-validate content before attempting conversion
 		if (!kicadModContent.trim()) {
 			throw new Error("Empty content provided");
 		}
 
-		const circuitJson = parseKicadModToCircuitJson(kicadModContent);
+		const circuitJson = await parseKicadModToCircuitJson(kicadModContent);
 		return {
 			success: true,
 			data: circuitJson,

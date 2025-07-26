@@ -46,8 +46,7 @@ export const GET = async (req) => {
 			return new Response("Invalid KiCad mod file format", { status: 400 });
 		}
 
-		const conversionResult = convertKicadModToCircuitJson(kicadModContent);
-		console.log(conversionResult);
+		const conversionResult = await convertKicadModToCircuitJson(kicadModContent);
 
 		if (!conversionResult.success) {
 			return new Response(`Conversion error: ${conversionResult.error}`, {
