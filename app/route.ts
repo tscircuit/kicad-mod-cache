@@ -10,7 +10,9 @@ export const GET = (req) => {
     You can also load the circuit json equivalent of the mod file by replacing the .kicad_mod with .circuit.json
     <a href="/Resistor_SMD.pretty/R_0402_1005Metric.circuit.json">/Resistor_SMD.pretty/R_0402_1005Metric.circuit.json</a>
     </p>
-  
+    <p>
+    You can find the source code for this server here: <a href="https://github.com/tscircuit/kicad-mod-server">https://github.com/tscircuit/kicad-mod-server</a>
+    </p>
   </body></html>`,
 		{
 			headers: {

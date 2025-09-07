@@ -20,9 +20,17 @@ export const GET = async (req) => {
 	}
 
 	// Convert .circuit.json path to .kicad_mod for fetching
-	const kicadModPath = convertToCircuitJson
+	let kicadModPath = convertToCircuitJson
 		? pathname.replace(".circuit.json", ".kicad_mod")
 		: pathname;
+
+	// Transform path to use .pretty format if not already present
+	// Convert /Resistor_SMD/R_0402_1005Metric.kicad_mod to /Resistor_SMD.pretty/R_0402_1005Metric.kicad_mod
+	const pathParts = kicadModPath.split('/');
+	if (pathParts.length >= 3 && !pathParts[pathParts.length - 2].endsWith('.pretty')) {
+		pathParts[pathParts.length - 2] = pathParts[pathParts.length - 2] + '.pretty';
+		kicadModPath = pathParts.join('/');
+	}
 
 	// Construct the GitLab URL using the extracted parameter
 	const gitlabUrl = `https://gitlab.com/kicad/libraries/kicad-footprints/-/raw/master${kicadModPath}?ref_type=heads`;
@@ -46,7 +54,8 @@ export const GET = async (req) => {
 			return new Response("Invalid KiCad mod file format", { status: 400 });
 		}
 
-		const conversionResult = await convertKicadModToCircuitJson(kicadModContent);
+		const conversionResult =
+			await convertKicadModToCircuitJson(kicadModContent);
 
 		if (!conversionResult.success) {
 			return new Response(`Conversion error: ${conversionResult.error}`, {
