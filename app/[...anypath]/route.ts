@@ -20,9 +20,20 @@ export const GET = async (req) => {
 	}
 
 	// Convert .circuit.json path to .kicad_mod for fetching
-	const kicadModPath = convertToCircuitJson
+	let kicadModPath = convertToCircuitJson
 		? pathname.replace(".circuit.json", ".kicad_mod")
 		: pathname;
+
+	// Support folder paths without the ".pretty" suffix by normalizing the first segment
+	// Example: /Resistor_SMD/R_0402_1005Metric.kicad_mod -> /Resistor_SMD.pretty/R_0402_1005Metric.kicad_mod
+	const parts = kicadModPath.split("/");
+	if (parts.length >= 3) {
+		const firstSegmentIndex = 1; // because split on leading "/" yields first empty string
+		if (parts[firstSegmentIndex] && !parts[firstSegmentIndex].endsWith(".pretty")) {
+			parts[firstSegmentIndex] = `${parts[firstSegmentIndex]}.pretty`;
+			kicadModPath = parts.join("/");
+		}
+	}
 
 	// Construct the GitLab URL using the extracted parameter
 	const gitlabUrl = `https://gitlab.com/kicad/libraries/kicad-footprints/-/raw/master${kicadModPath}?ref_type=heads`;
