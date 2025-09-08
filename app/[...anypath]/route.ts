@@ -3,7 +3,7 @@ import {
 	isValidKicadMod,
 } from "../../lib/kicad-converter";
 
-export const GET = async (req) => {
+export const GET = async (req: Request) => {
 	const { pathname, searchParams } = new URL(req.url);
 
 	// Check if the parameter is provided
@@ -87,7 +87,7 @@ export const GET = async (req) => {
 	});
 };
 
-export const OPTIONS = async (req) => {
+export const OPTIONS = async (req: Request) => {
     // Preflight CORS handling
     const headers = new Headers();
     const origin = req.headers.get("origin") || "*";

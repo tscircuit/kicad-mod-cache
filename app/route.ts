@@ -1,15 +1,15 @@
-export const GET = (req) => {
-    const headers = new Headers({
-        "Content-Type": "text/html",
-    });
-    const origin = req.headers.get("origin") || "*";
-    headers.set("Access-Control-Allow-Origin", origin);
-    headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
-    headers.set("Access-Control-Allow-Headers", "Content-Type");
-    headers.set("Vary", "Origin");
+export const GET = (req: Request) => {
+  const headers = new Headers({
+    "Content-Type": "text/html",
+  })
+  const origin = req.headers.get("origin") || "*"
+  headers.set("Access-Control-Allow-Origin", origin)
+  headers.set("Access-Control-Allow-Methods", "GET, OPTIONS")
+  headers.set("Access-Control-Allow-Headers", "Content-Type")
+  headers.set("Vary", "Origin")
 
-    return new Response(
-        `<html><body>
+  return new Response(
+    `<html><body>
   
   This server caches official kicad mod files, here is the <a href="https://gitlab.com/kicad/libraries/kicad-footprints/-/blob/master/LICENSE.md?ref_type=heads">license file</a> and <a href="https://gitlab.com/kicad/libraries/kicad-footprints">original repo</a>
     <p>
@@ -21,23 +21,27 @@ export const GET = (req) => {
     </p>
   
   </body></html>`,
-        {
-            headers,
-        },
-    );
-};
+    {
+      headers,
+    },
+  )
+}
 
-export const OPTIONS = (req) => {
-    const headers = new Headers();
-    const origin = req.headers.get("origin") || "*";
-    const reqMethod = req.headers.get("access-control-request-method") || "GET";
-    const reqHeaders = req.headers.get("access-control-request-headers") || "Content-Type";
+export const OPTIONS = (req: Request) => {
+  const headers = new Headers()
+  const origin = req.headers.get("origin") || "*"
+  const reqMethod = req.headers.get("access-control-request-method") || "GET"
+  const reqHeaders =
+    req.headers.get("access-control-request-headers") || "Content-Type"
 
-    headers.set("Access-Control-Allow-Origin", origin);
-    headers.set("Access-Control-Allow-Methods", `${reqMethod}, OPTIONS`);
-    headers.set("Access-Control-Allow-Headers", reqHeaders);
-    headers.set("Access-Control-Max-Age", "86400");
-    headers.set("Vary", "Origin, Access-Control-Request-Method, Access-Control-Request-Headers");
+  headers.set("Access-Control-Allow-Origin", origin)
+  headers.set("Access-Control-Allow-Methods", `${reqMethod}, OPTIONS`)
+  headers.set("Access-Control-Allow-Headers", reqHeaders)
+  headers.set("Access-Control-Max-Age", "86400")
+  headers.set(
+    "Vary",
+    "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+  )
 
-    return new Response(null, { status: 204, headers });
-};
+  return new Response(null, { status: 204, headers })
+}
