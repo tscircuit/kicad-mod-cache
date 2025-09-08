@@ -58,15 +58,16 @@ export const GET = async (req) => {
 		contentType = "application/json";
 	}
 
-	const headers = new Headers();
-	headers.set("Cache-Control", "s-maxage=86400, stale-while-revalidate=86400");
-	headers.set("Content-Type", contentType);
+    const headers = new Headers();
+    headers.set("Cache-Control", "s-maxage=86400, stale-while-revalidate=86400");
+    headers.set("Content-Type", contentType);
 
-	// Add CORS headers
-	headers.set("Access-Control-Allow-Origin", req.headers.get("Origin"));
-	headers.set("Access-Control-Allow-Private-Network", "true");
-	headers.set("Access-Control-Allow-Methods", "GET");
-	headers.set("Access-Control-Allow-Headers", "Content-Type");
+    // CORS headers
+    const origin = req.headers.get("origin") || "*";
+    headers.set("Access-Control-Allow-Origin", origin);
+    headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+    headers.set("Access-Control-Allow-Headers", "Content-Type");
+    headers.set("Vary", "Origin");
 
 	// Return the response with caching and CORS headers
 	return new Response(responseContent, {
@@ -76,15 +77,23 @@ export const GET = async (req) => {
 };
 
 export const OPTIONS = async (req) => {
-	// Add CORS headers
-	const headers = new Headers();
-	headers.set("Access-Control-Allow-Origin", req.headers.get("Origin"));
-	headers.set("Access-Control-Allow-Methods", "GET");
-	headers.set("Access-Control-Allow-Private-Network", "true");
-	headers.set("Access-Control-Allow-Headers", "Content-Type");
+    // Preflight CORS handling
+    const headers = new Headers();
+    const origin = req.headers.get("origin") || "*";
+    const reqMethod = req.headers.get("access-control-request-method") || "GET";
+    const reqHeaders = req.headers.get("access-control-request-headers") || "Content-Type";
 
-	return new Response(null, {
-		status: 200,
-		headers: headers,
-	});
+    headers.set("Access-Control-Allow-Origin", origin);
+    headers.set("Access-Control-Allow-Methods", `${reqMethod}, OPTIONS`);
+    headers.set("Access-Control-Allow-Headers", reqHeaders);
+    headers.set("Access-Control-Max-Age", "86400");
+    headers.set("Vary", "Origin, Access-Control-Request-Method, Access-Control-Request-Headers");
+
+    // Only needed for Private Network Access preflight (Chrome-based)
+    headers.set("Access-Control-Allow-Private-Network", "true");
+
+    return new Response(null, {
+        status: 204,
+        headers,
+    });
 };
