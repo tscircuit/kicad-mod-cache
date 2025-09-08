@@ -1,5 +1,8 @@
 import { expect, test } from "bun:test"
-import { convertKicadModToCircuitJson, isValidKicadMod } from "../lib/kicad-converter"
+import {
+  convertKicadModToCircuitJson,
+  isValidKicadMod,
+} from "../lib/kicad-converter"
 
 const validKicadModContent = `(module LED_SMD:LED_0603_1608Metric_Castellated (layer F.Cu) (tedit 5A030A40)
   (descr "LED SMD 0603 (1608 Metric), castellated end terminals, https://www.osram-os.com/Graphics/XPic4/00205340_0.pdf/KW%20CSLNM1.EC")
@@ -32,8 +35,8 @@ test("isValidKicadMod should handle footprint format", () => {
   expect(isValidKicadMod(footprintContent)).toBe(true)
 })
 
-test("convertKicadModToCircuitJson should return success for valid content", () => {
-  const result = convertKicadModToCircuitJson(validKicadModContent)
+test("convertKicadModToCircuitJson should return success for valid content", async () => {
+  const result = await convertKicadModToCircuitJson(validKicadModContent)
   expect(result.success).toBe(true)
   expect(result.data).toBeDefined()
   expect(result.error).toBe(null)
@@ -42,8 +45,8 @@ test("convertKicadModToCircuitJson should return success for valid content", () 
 // Note: The kicad-mod-converter library has some edge cases with error handling
 // These tests focus on the validation and successful conversion paths
 
-test("convertKicadModToCircuitJson should handle empty content", () => {
-  const result = convertKicadModToCircuitJson("")
+test("convertKicadModToCircuitJson should handle empty content", async () => {
+  const result = await convertKicadModToCircuitJson("")
   expect(result.success).toBe(false)
   expect(result.data).toBe(null)
   expect(result.error).toBeDefined()
