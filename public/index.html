@@ -1,15 +1,6 @@
-const fs = await import("fs")
-const vfs = (await import("./vfs.js")).default
-
-const filepaths = Object.keys(vfs)
-
-fs.writeFileSync("public/kicad_files.json", JSON.stringify(filepaths))
-fs.writeFileSync(
-  "public/index.html",
-  `<html><body>
+<html><body>
 
 This server hosts official kicad mod and 3d model (wrl) files. Footprints: <a href="https://gitlab.com/kicad/libraries/kicad-footprints/-/blob/master/LICENSE.md?ref_type=heads">license file</a> and <a href="https://gitlab.com/kicad/libraries/kicad-footprints">original repo</a><br/>
 3D models: <a href="https://gitlab.com/kicad/libraries/kicad-packages3D/-/blob/master/LICENSE.md?ref_type=heads">license file</a> and <a href="https://gitlab.com/kicad/libraries/kicad-packages3D">original repo</a>
 
-</body></html>`,
-)
+</body></html>
