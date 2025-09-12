@@ -5,7 +5,7 @@ test("serves wrl files from packages3D repo", async () => {
   const expectedUrl =
     "https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/Battery.3dshapes/BatteryClip.wrl?ref_type=heads"
   const originalFetch = global.fetch
-  global.fetch = (async (url: RequestInfo) => {
+  global.fetch = (async (url: string | URL) => {
     expect(url).toBe(expectedUrl)
     return new Response("wrl content")
   }) as any
