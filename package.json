@@ -15,7 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "kicad-component-converter": "^0.1.16",
+    "kicad-component-converter": "^0.1.17",
     "make-vfs": "^1.0.10"
   },
   "devDependencies": {
