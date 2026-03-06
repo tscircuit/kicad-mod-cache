@@ -22,51 +22,81 @@ export const fetchFile = async (pathname: string): Promise<FetchResult> => {
     }
   }
 
-  let fetchPath = convertToCircuitJson
+  const requestedPath = convertToCircuitJson
     ? pathname.replace(".circuit.json", ".kicad_mod")
     : pathname
 
-  let gitlabUrl = ""
+  let fetchPathCandidates: string[] = []
+  let gitlabBaseUrl = ""
   let contentType = "text/plain"
 
   if (isKicadMod || convertToCircuitJson) {
-    const parts = fetchPath.split("/")
+    const parts = requestedPath.split("/")
+    const withPretty = [...parts]
     if (parts.length >= 3) {
       const firstSegmentIndex = 1
       if (
-        parts[firstSegmentIndex] &&
-        !parts[firstSegmentIndex].endsWith(".pretty")
+        withPretty[firstSegmentIndex] &&
+        !withPretty[firstSegmentIndex].endsWith(".pretty")
       ) {
-        parts[firstSegmentIndex] = `${parts[firstSegmentIndex]}.pretty`
-        fetchPath = parts.join("/")
+        withPretty[firstSegmentIndex] =
+          `${withPretty[firstSegmentIndex]}.pretty`
       }
     }
 
-    gitlabUrl = `https://gitlab.com/kicad/libraries/kicad-footprints/-/raw/master${fetchPath}?ref_type=heads`
+    fetchPathCandidates = [withPretty.join("/"), requestedPath]
+
+    gitlabBaseUrl =
+      "https://gitlab.com/kicad/libraries/kicad-footprints/-/raw/master"
   } else if (isWrl) {
-    const parts = fetchPath.split("/")
+    const parts = requestedPath.split("/")
+    const with3dShapes = [...parts]
     if (parts.length >= 3) {
       const firstSegmentIndex = 1
       if (
-        parts[firstSegmentIndex] &&
-        !parts[firstSegmentIndex].endsWith(".3dshapes")
+        with3dShapes[firstSegmentIndex] &&
+        !with3dShapes[firstSegmentIndex].endsWith(".3dshapes")
       ) {
-        parts[firstSegmentIndex] = `${parts[firstSegmentIndex]}.3dshapes`
-        fetchPath = parts.join("/")
+        with3dShapes[firstSegmentIndex] =
+          `${with3dShapes[firstSegmentIndex]}.3dshapes`
       }
     }
 
-    gitlabUrl = `https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master${fetchPath}?ref_type=heads`
+    fetchPathCandidates = [with3dShapes.join("/"), requestedPath]
+
+    gitlabBaseUrl =
+      "https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master"
     contentType = "model/vrml"
   }
 
-  const res = await fetch(gitlabUrl)
+  const uniqueCandidates = [...new Set(fetchPathCandidates)]
+  let res: Awaited<ReturnType<typeof fetch>> | null = null
 
-  if (!res.ok) {
+  for (const pathCandidate of uniqueCandidates) {
+    const encodedPath = pathCandidate
+      .split("/")
+      .map((segment, index) =>
+        index === 0 || segment === "" ? segment : encodeURIComponent(segment),
+      )
+      .join("/")
+    const gitlabUrl = `${gitlabBaseUrl}${encodedPath}?ref_type=heads`
+    const attempt = await fetch(gitlabUrl)
+
+    if (attempt.ok) {
+      res = attempt
+      break
+    }
+
+    if (res === null) {
+      res = attempt
+    }
+  }
+
+  if (!res?.ok) {
     return {
       body: "Couldn't find file",
       contentType: "text/plain",
-      status: res.status,
+      status: res?.status ?? 404,
     }
   }
 
