@@ -20,6 +20,56 @@ test("serves wrl files from packages3D repo", async () => {
   global.fetch = originalFetch
 })
 
+test("falls back from .wrl to .step when the .wrl model is missing", async () => {
+  const originalFetch = global.fetch
+  const requests: string[] = []
+
+  global.fetch = (async (url: string | URL) => {
+    requests.push(String(url))
+
+    if (requests.length <= 2) {
+      return new Response("missing", { status: 404 })
+    }
+
+    return new Response("step content", { status: 200 })
+  }) as any
+
+  const req = new Request(
+    "http://localhost/Connector_JST/JST_VH_B4PS-VH_1x04_P3.96mm_Horizontal.wrl",
+  )
+  const res = await GET(req)
+
+  expect(res.status).toBe(200)
+  expect(await res.text()).toBe("step content")
+  expect(res.headers.get("Content-Type")).toBe("model/step")
+  expect(requests).toEqual([
+    "https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/Connector_JST.3dshapes/JST_VH_B4PS-VH_1x04_P3.96mm_Horizontal.wrl?ref_type=heads",
+    "https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/Connector_JST/JST_VH_B4PS-VH_1x04_P3.96mm_Horizontal.wrl?ref_type=heads",
+    "https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/Connector_JST.3dshapes/JST_VH_B4PS-VH_1x04_P3.96mm_Horizontal.step?ref_type=heads",
+  ])
+
+  global.fetch = originalFetch
+})
+
+test("serves .step files from packages3D repo", async () => {
+  const expectedUrl =
+    "https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/Battery.3dshapes/BatteryClip.step?ref_type=heads"
+  const originalFetch = global.fetch
+  global.fetch = (async (url: string | URL) => {
+    expect(url).toBe(expectedUrl)
+    return new Response("step content")
+  }) as any
+
+  const req = new Request("http://localhost/Battery/BatteryClip.step")
+  const res = await GET(req)
+  const text = await res.text()
+
+  expect(text).toBe("step content")
+  expect(res.headers.get("Content-Type")).toBe("model/step")
+
+  global.fetch = originalFetch
+})
+
 test("falls back to raw path if .pretty expansion 404s", async () => {
   const originalFetch = global.fetch
   const requests: string[] = []
