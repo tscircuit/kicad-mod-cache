@@ -10,6 +10,7 @@ repository.
 | `/kicad_files.json` | List of all kicad files |
 | `/*.kicad_mod`      | Get a kicad mod file    |
 | `/*.wrl`            | Get a 3D model file     |
+| `/*.step`           | Get STEP file           |
 
 ## License
 
