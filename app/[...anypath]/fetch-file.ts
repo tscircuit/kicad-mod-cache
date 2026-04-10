@@ -13,8 +13,9 @@ export const fetchFile = async (pathname: string): Promise<FetchResult> => {
   const convertToCircuitJson = pathname.endsWith(".circuit.json")
   const isKicadMod = pathname.endsWith("kicad_mod")
   const isWrl = pathname.endsWith(".wrl")
+  const isStep = pathname.endsWith(".step")
 
-  if (!isKicadMod && !convertToCircuitJson && !isWrl) {
+  if (!isKicadMod && !convertToCircuitJson && !isWrl && !isStep) {
     return {
       body: "Invalid path parameter",
       contentType: "text/plain",
@@ -48,7 +49,7 @@ export const fetchFile = async (pathname: string): Promise<FetchResult> => {
 
     gitlabBaseUrl =
       "https://gitlab.com/kicad/libraries/kicad-footprints/-/raw/master"
-  } else if (isWrl) {
+  } else if (isWrl || isStep) {
     const parts = requestedPath.split("/")
     const with3dShapes = [...parts]
     if (parts.length >= 3) {
@@ -66,7 +67,7 @@ export const fetchFile = async (pathname: string): Promise<FetchResult> => {
 
     gitlabBaseUrl =
       "https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master"
-    contentType = "model/vrml"
+    contentType = isWrl ? "model/vrml" : "model/step"
   }
 
   const uniqueCandidates = [...new Set(fetchPathCandidates)]
