@@ -1,4 +1,10 @@
-import { parseKicadModToCircuitJson } from "kicad-component-converter"
+import { KicadFootprintToCircuitJsonConverter } from "kicad-to-circuit-json"
+
+const KICAD_MOD_FILE_NAME = "footprint.kicad_mod"
+
+function normalizeLegacyKicadMod(content: string) {
+  return content.replace(/^(\s*)\(module\b/, "$1(footprint")
+}
 
 /**
  * Converts KiCad mod file content to circuit.json format
@@ -10,7 +16,14 @@ export async function convertKicadModToCircuitJson(kicadModContent: string) {
       throw new Error("Empty content provided")
     }
 
-    const circuitJson = await parseKicadModToCircuitJson(kicadModContent)
+    const converter = new KicadFootprintToCircuitJsonConverter()
+    converter.addFile(
+      KICAD_MOD_FILE_NAME,
+      normalizeLegacyKicadMod(kicadModContent),
+    )
+    converter.runUntilFinished()
+
+    const circuitJson = converter.getOutput()
     return {
       success: true,
       data: circuitJson,
