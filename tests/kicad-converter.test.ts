@@ -42,7 +42,7 @@ test("convertKicadModToCircuitJson should return success for valid content", asy
   expect(result.error).toBe(null)
 })
 
-// Note: The kicad-mod-converter library has some edge cases with error handling
+// Note: The upstream converter can surface parser errors with varying messages
 // These tests focus on the validation and successful conversion paths
 
 test("convertKicadModToCircuitJson should handle empty content", async () => {

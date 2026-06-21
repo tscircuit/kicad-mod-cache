@@ -15,8 +15,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "kicad-component-converter": "^0.1.40",
-    "make-vfs": "^1.0.10"
+    "@tscircuit/circuit-json-util": "^0.0.96",
+    "@tscircuit/miniflex": "^0.0.4",
+    "circuit-json": "^0.0.437",
+    "format-si-unit": "^0.0.7",
+    "kicad-to-circuit-json": "^0.0.99",
+    "kicadts": "^0.0.48",
+    "make-vfs": "^1.0.10",
+    "transformation-matrix": "^3.1.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.3",
@@ -26,7 +33,6 @@
     "debug": "^4.4.3",
     "next": "^14.2.3",
     "s-expression": "^3.1.1",
-    "typescript": "5.4.5",
-    "zod": "^3.23.8"
+    "typescript": "5.4.5"
   }
 }
