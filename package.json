@@ -15,8 +15,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "kicad-component-converter": "^0.1.40",
-    "make-vfs": "^1.0.10"
+    "@tscircuit/circuit-json-util": "^0.0.94",
+    "format-si-unit": "^0.0.7",
+    "kicad-to-circuit-json": "^0.0.101",
+    "kicadts": "^0.0.48",
+    "make-vfs": "^1.0.10",
+    "transformation-matrix": "^3.1.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.3",
