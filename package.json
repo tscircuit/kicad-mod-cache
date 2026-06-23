@@ -17,7 +17,7 @@
   "dependencies": {
     "@tscircuit/circuit-json-util": "^0.0.94",
     "format-si-unit": "^0.0.7",
-    "kicad-to-circuit-json": "^0.0.101",
+    "kicad-to-circuit-json": "^0.0.104",
     "kicadts": "^0.0.48",
     "make-vfs": "^1.0.10",
     "transformation-matrix": "^3.1.0"
