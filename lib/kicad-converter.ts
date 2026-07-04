@@ -1,5 +1,11 @@
 import { KicadFootprintToCircuitJsonConverter } from "kicad-to-circuit-json"
 
+const KICAD_MOD_FILE_NAME = "footprint.kicad_mod"
+
+function normalizeLegacyKicadMod(content: string) {
+  return content.replace(/^(\s*)\(module\b/, "$1(footprint")
+}
+
 /**
  * Converts KiCad mod file content to circuit.json format
  */
