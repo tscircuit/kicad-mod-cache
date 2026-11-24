@@ -89,3 +89,25 @@ test("encodes path segments before fetching", async () => {
 
   global.fetch = originalFetch
 })
+
+test("does not double-encode percent-encoded path segments", async () => {
+  const originalFetch = global.fetch
+  const requests: string[] = []
+
+  global.fetch = (async (url: string | URL) => {
+    requests.push(String(url))
+    return new Response("footprint content", { status: 200 })
+  }) as any
+
+  const req = new Request(
+    "http://localhost/Connector_Phoenix_GMSTB/PhoenixContact_GMSTBA_2%2C5_10-G-7%2C62_1x10_P7.62mm_Horizontal.kicad_mod",
+  )
+  const res = await GET(req)
+
+  expect(res.status).toBe(200)
+  expect(requests[0]).toBe(
+    "https://gitlab.com/kicad/libraries/kicad-footprints/-/raw/master/Connector_Phoenix_GMSTB.pretty/PhoenixContact_GMSTBA_2%2C5_10-G-7%2C62_1x10_P7.62mm_Horizontal.kicad_mod?ref_type=heads",
+  )
+
+  global.fetch = originalFetch
+})

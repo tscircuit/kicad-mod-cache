@@ -9,6 +9,32 @@ export interface FetchResult {
   status: number
 }
 
+const isHexDigit = (char: string | undefined) =>
+  char !== undefined && /[0-9a-fA-F]/.test(char)
+
+const encodePathSegment = (segment: string): string => {
+  let encoded = ""
+  let index = 0
+
+  while (index < segment.length) {
+    if (
+      segment[index] === "%" &&
+      isHexDigit(segment[index + 1]) &&
+      isHexDigit(segment[index + 2])
+    ) {
+      encoded += segment.slice(index, index + 3)
+      index += 3
+      continue
+    }
+
+    const char = String.fromCodePoint(segment.codePointAt(index)!)
+    encoded += encodeURIComponent(char)
+    index += char.length
+  }
+
+  return encoded
+}
+
 export const fetchFile = async (pathname: string): Promise<FetchResult> => {
   const convertToCircuitJson = pathname.endsWith(".circuit.json")
   const isKicadMod = pathname.endsWith("kicad_mod")
@@ -96,7 +122,7 @@ export const fetchFile = async (pathname: string): Promise<FetchResult> => {
     const encodedPath = pathCandidate
       .split("/")
       .map((segment, index) =>
-        index === 0 || segment === "" ? segment : encodeURIComponent(segment),
+        index === 0 || segment === "" ? segment : encodePathSegment(segment),
       )
       .join("/")
     const gitlabUrl = `${gitlabBaseUrl}${encodedPath}?ref_type=heads`
